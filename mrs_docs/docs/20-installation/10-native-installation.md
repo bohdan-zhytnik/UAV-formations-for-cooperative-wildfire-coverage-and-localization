@@ -1,0 +1,86 @@
+---
+title: Native installation
+pagination_label: Installing the MRS natively
+description: Installing the MRS natively
+---
+
+:::warning
+This page is describing the upcoming ROS2 version of the MRS UAV System (however, it may be still outdated). If you are looking for ROS1 version of the docs, follow to https://ctu-mrs.github.io/docs/1.5.0/introduction/.
+:::
+
+# Native installation of the MRS UAV System
+
+## Installation steps
+
+### 1. Install the Robot Operating System (Jazzy)
+
+Follow the [ROS2 Installation](../10-prerequisites/25-ros2/10-installation.md) guide.
+
+### 2. Add the **[stable](https://github.com/ctu-mrs/ppa2-stable)** PPA into your apt-get repository:
+
+```bash
+curl https://ctu-mrs.github.io/ppa2-stable/add_ppa.sh | bash
+```
+
+  * <details>
+    <summary> Special instructions for the MRS System developers </summary>
+
+      * Instead of the stable PPA, you can add the **[unstable](https://github.com/ctu-mrs/ppa2-unstable)** PPA, for which the packages are build immediately after being pushed to **ros2**.
+      * If you have both PPAs, the **unstable** has a priority.
+      * Beware! The **unstable** PPA might be internally inconsistent, buggy and dangerous!
+
+    </details>
+
+### 3. Install the MRS UAV System:
+
+```bash
+sudo apt install ros-jazzy-mrs-uav-system-full
+```
+
+### 4. Set Zenoh to be the used RMW implementation
+
+The [Zenoh](../50-features/100-zenoh-network/index.md) RMW is used by default in our example simulation sessions. Add to `~/.bashrc` (`~/.zshrc`):
+
+```
+export RMW_IMPLEMENTATION="rmw_zenoh_cpp"
+```
+
+Source `~/.bashrc` (`~/.zshrc`):
+
+```bash
+source ~/.bashrc
+```
+
+Note that if you recently changed the RMW_IMPLEMENTATION (from the default `rmw_fastrtps_cpp`), topics may not appear in `ros2 topic list` because of the previous rmw's daemon still running, this can be fixed with these commands or by restarting
+
+```bash
+pkill -9 -f ros && ros2 daemon stop
+```
+
+### 5. Start the example simulation session:
+
+```bash
+cd /opt/ros/jazzy/share/mrs_multirotor_simulator/tmux/mrs_one_drone
+./start.sh
+```
+
+## How to update the MRS UAV System
+
+Issue the following command to update the MRS UAV System:
+
+```bash
+sudo apt update && rosdep update && sudo apt upgrade --with-new-pkgs --allow-downgrades
+```
+
+### What does it do?
+
+* `sudo apt update` will refresh the available debian packages from the archives.
+* `rosdep update` will refresh the rosdep dependency tree >
+* `sudo apt upgrade` will download the new versions of packages.
+  * `--with-new-pkgs` will ensure that if new dependency appears for an already installed package, it will be installed as well.
+  * `--allow-downgrades` will allow to downgrade a package version. This happens when installing our forks of official ROS packages.
+
+
+## Note
+
+ROS2 relies heavily on Python utilities. On Ubuntu 24.04, however, daily work with system-wide packages (ROS2 Python utilities are installed system-wide) is discouraged in favor of virtual environments. Make sure your virtual environment can see the system-wide packages. (E.g., with `virtualenv` utility, use the `--system-site-packages`.)
