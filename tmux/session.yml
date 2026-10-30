@@ -1,0 +1,50 @@
+# Adapted from the installed MRS one_drone/session.yml.
+root: ./
+name: fire_demo
+socket_name: mrs_fire
+attach: false
+tmux_options: -f /etc/ctu-mrs/tmux.conf
+pre_window:
+  - source ../scripts/env.sh
+startup_window: commands
+windows:
+  - zenoh_router:
+      panes:
+        - ros2 run rmw_zenoh_cpp rmw_zenohd
+  - gazebo:
+      layout: tiled
+      panes:
+        - ros2 launch mrs_uav_gazebo_simulator simulation.launch.py
+          world_file:=$FIRE_SHARE/worlds/fire_patch.sdf
+          spawner_config:=$FIRE_PROJECT_PATH/tmux/runtime/spawner.yaml
+          GZ_SIM_SERVER_CONFIG_PATH:=$FIRE_SHARE/config/gazebo_server.config
+          gz_headless:=false gz_verbose:=true
+        - |
+          waitForGazebo && sleep 3 && ros2 service call /mrs_drone_spawner/spawn mrs_msgs/srv/String "{value: '1 --x500_fire --enable-rangefinder --pos 0 0 0.15 0'}"
+  - cameras:
+      panes:
+        - ros2 launch fire_observation_demo cameras.launch.py
+  - fire_mapping:
+      panes:
+        - ros2 launch fire_observation_demo demo.launch.py
+  - px4_api:
+      panes:
+        - ros2 launch mrs_uav_px4_api api.launch.py
+  - core:
+      panes:
+        - ros2 launch mrs_uav_core core.launch.py
+          platform_config:=$PLATFORM_CONFIG
+          world_config:=./config/world_config.yaml
+          custom_config:=./config/custom_config.yaml
+          network_config:=./config/network_config.yaml
+  - status:
+      panes:
+        - ros2 run mrs_uav_status status.sh
+  - commands:
+      panes:
+        - |
+          echo 'Takeoff: ./takeoff.sh | Observe patch: ./observe_fire.sh | Land: ./land.sh'
+          echo 'RViz: Fire demo controls panel -> altitude -> Enable map commands -> 2D Goal Pose.'
+  - rviz:
+      panes:
+        - waitForCore && ros2 run fire_observation_demo fire_rviz -d ./rviz.rviz --ros-args -p use_sim_time:=true

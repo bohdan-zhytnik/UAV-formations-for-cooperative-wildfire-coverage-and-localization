@@ -1,0 +1,45 @@
+# Operator-authored inspection routes/search areas. No automatic takeoff/start.
+# The mission system never reads fires.yaml (scene evaluation truth).
+settings:
+  minimum_separation_m: 3.5
+  grounded_separation_m: 2.0
+  revisit_sim_s: 20.0
+  dwell_sim_s: 3.0
+  arrival_tolerance_m: 0.4
+  arrival_hold_sim_s: 1.0
+  travel_timeout_sim_s: 90.0
+  observation_timeout_sim_s: 12.0
+  coordinator_timeout_wall_s: 5.0
+survey:
+  enabled: true
+  bounds: [5.0, -5.0, 17.0, 9.0]
+  split_axis: auto
+  altitude_m: 5.0
+  spacing_m: 3.0
+  revisit_sim_s: 20.0
+  dwell_sim_s: 1.0
+  planning_speed_mps: 1.0
+  return_margin_sim_s: 2.0
+uavs:
+  uav1:
+    loop: true
+    route:
+      - position: [8.0, -0.8, 5.0]
+        dwell_sim_s: 3.0
+      - position: [8.0, -2.5, 5.0]
+        dwell_sim_s: 3.0
+    area:
+      bounds: [7.0, -3.0, 9.0, 1.0]
+      spacing_m: 1.0
+      altitude_m: 5.0
+  uav2:
+    loop: true
+    route:
+      - position: [12.0, 6.0, 5.0]
+        dwell_sim_s: 3.0
+      - position: [12.0, 7.0, 5.0]
+        dwell_sim_s: 3.0
+    area:
+      bounds: [11.0, 5.0, 13.0, 7.0]
+      spacing_m: 1.0
+      altitude_m: 5.0

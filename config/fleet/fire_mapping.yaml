@@ -1,0 +1,13 @@
+# Perception/map settings; no scene truth belongs here.
+observer:
+  ground_z: 0.0
+  threshold_kelvin: 450.0
+  kelvin_per_count: 0.02
+  minimum_hot_pixels: 50
+  update_period_s: 0.5
+map:
+  association_distance_m: 0.9
+  window_per_uav: 15
+  uncertainty_floor_m: 0.03
+  visible_age_s: 2.0
+  max_tracks: 64

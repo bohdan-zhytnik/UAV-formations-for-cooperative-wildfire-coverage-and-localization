@@ -1,0 +1,63 @@
+# Based on the installed MRS two_drones scenario. Missions start explicitly.
+root: ./
+name: fire_fleet
+socket_name: mrs_fire_fleet
+attach: false
+tmux_options: -f /etc/ctu-mrs/tmux.conf
+pre_window:
+  - source ../scripts/fleet_env.sh
+startup_window: commands
+windows:
+  - zenoh_router:
+      panes:
+        - ros2 run rmw_zenoh_cpp rmw_zenohd
+  - gazebo:
+      layout: tiled
+      panes:
+        - ros2 launch mrs_uav_gazebo_simulator simulation.launch.py
+          world_file:=$FIRE_PROJECT_PATH/tmux_fleet/runtime/fire_fleet.sdf
+          spawner_config:=$FIRE_PROJECT_PATH/tmux_fleet/runtime/spawner.yaml
+          GZ_SIM_SERVER_CONFIG_PATH:=$FIRE_SHARE/config/gazebo_server.config
+          gz_headless:=${FIRE_GZ_HEADLESS:-false} gz_verbose:=true
+        - waitForGazebo && sleep 3 && python3 ../scripts/spawn_fleet.py
+  - cameras:
+      panes:
+        - ros2 launch fire_observation_demo fleet_cameras.launch.py
+  - px4_api:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; ros2 launch mrs_uav_px4_api api.launch.py
+        - export UAV_NAME=uav2; ros2 launch mrs_uav_px4_api api.launch.py
+  - core:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; waitForHwApi; ros2 launch mrs_uav_core core.launch.py
+          platform_config:=$PLATFORM_CONFIG
+          world_config:=$FIRE_PROJECT_PATH/tmux/config/world_config.yaml
+          custom_config:=$FIRE_PROJECT_PATH/tmux/config/custom_config.yaml
+          network_config:=$FIRE_SHARE/config/fleet/network.yaml
+        - export UAV_NAME=uav2; waitForHwApi; ros2 launch mrs_uav_core core.launch.py
+          platform_config:=$PLATFORM_CONFIG
+          world_config:=$FIRE_PROJECT_PATH/tmux/config/world_config.yaml
+          custom_config:=$FIRE_PROJECT_PATH/tmux/config/custom_config.yaml
+          network_config:=$FIRE_SHARE/config/fleet/network.yaml
+  - status:
+      layout: tiled
+      panes:
+        - export UAV_NAME=uav1; ros2 run mrs_uav_status status.sh
+        - export UAV_NAME=uav2; ros2 run mrs_uav_status status.sh
+  - fleet_control:
+      panes:
+        - ros2 launch fire_observation_demo fleet.launch.py
+  - commands:
+      panes:
+        - |
+          echo 'RViz: Two-drone controls -> select uav1/uav2 -> Take off selected.'
+          echo 'Enable map goals, then use 2D Fleet Goal (g).'
+          echo 'Terminal: ./fleetctl.sh takeoff uav1 | hover uav2 | land uav1 | select uav2 | status'
+          echo 'Missions: ./missionctl.sh status | start uav1 | start_all | pause uav1 | resume uav1'
+          echo 'Shared survey: RViz Survey tab; r and drag rectangle, Apply, take off, Start both.'
+          echo 'Terminal: ./missionctl.sh survey 5 -5 17 9 --spacing 3 --revisit 20'
+  - rviz:
+      panes:
+        - ros2 run fire_observation_demo fleet_rviz -d ./rviz.rviz --ros-args -p use_sim_time:=true

@@ -1,0 +1,11 @@
+<library path="fleet_goal_tool">
+  <class name="fire_observation_demo/SurveyRegion" type="fire_observation_demo::SurveyRegionTool" base_class_type="rviz_common::Tool">
+    <description>Drag a shared survey rectangle on the ground; confirm its split in the Survey panel.</description>
+  </class>
+  <class name="fire_observation_demo/FleetGoal" type="fire_observation_demo::FleetGoalTool" base_class_type="rviz_common::Tool">
+    <description>Click and drag a fleet waypoint. Captures the selected UAV and altitude atomically.</description>
+  </class>
+  <class name="fire_observation_demo/FleetImage" type="fire_observation_demo::FleetImageDisplay" base_class_type="rviz_common::Display">
+    <description>RViz Image display with idempotent callback cleanup for this installed Jazzy version.</description>
+  </class>
+</library>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>fire_observation_demo</name><version>0.5.0</version>
+  <description>MRS x500 thermal fire mapping and RViz flight-control demonstration.</description>
+  <maintainer email="rob@example.com">Rob</maintainer><license>BSD-3-Clause</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>mrs_uav_gazebo_simulator</exec_depend><exec_depend>mrs_uav_core</exec_depend>
+  <exec_depend>ros_gz_image</exec_depend><exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>tf2_ros</exec_depend><exec_depend>rviz2</exec_depend><depend>rclcpp</depend><depend>rviz_common</depend><depend>qtbase5-dev</depend>
+  <exec_depend>rclpy</exec_depend><exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend><exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-numpy</exec_depend><exec_depend>launch_ros</exec_depend>
+  <depend>std_msgs</depend>
+  <depend>rviz_default_plugins</depend><depend>pluginlib</depend>
+  <depend>rviz_rendering</depend>
+  <depend>image_transport</depend><depend>message_filters</depend>
+  <exec_depend>mrs_tf_connector</exec_depend><exec_depend>python3-yaml</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend><exec_depend>nav_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend><exec_depend>std_srvs</exec_depend>
+  <exec_depend>mrs_msgs</exec_depend><exec_depend>ament_index_python</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

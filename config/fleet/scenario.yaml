@@ -1,0 +1,15 @@
+# Positions are in the common GNSS world frame, in metres and radians.
+# Model/world truth is for scene generation and validation, not fire detection.
+frame: common_origin
+world: fire_fleet.sdf
+model: x500_fire_fleet
+maximum_command_altitude: 6.0
+uavs:
+  - name: uav1
+    id: 1
+    color: [0.1, 0.4, 1.0, 1.0]
+    spawn: [0.0, -6.0, 0.15, 0.0]
+  - name: uav2
+    id: 2
+    color: [0.1, 0.75, 0.25, 1.0]
+    spawn: [0.0, 6.0, 0.15, 0.0]
